@@ -129,7 +129,7 @@ function removerProduto() {
     mostrarMenu();
   });
 }
-function ativarDesativar() {
+function alterarDIsponibilidade() {
   rl.question("Digite o ID do Produto que deseja remover: ", (id) => {
     Id = +id;
     let produtoEncontrado = null;
@@ -602,7 +602,7 @@ function mostrarMenu() {
     } else if (opcao === "5") {
       removerProduto();
     } else if (opcao === "6") {
-      ativarDesativar();
+      alterarDIsponibilidade();
     } else if (opcao === "7") {
       criarPedido();
     } else if (opcao === "8") {
