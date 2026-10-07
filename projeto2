@@ -1,0 +1,639 @@
+const rl = require("readline").createInterface({
+  input: process.stdin,
+  output: process.stdout,
+});
+
+let produtos = [];
+let proximoIdProduto = 1;
+
+let pedidos = [];
+let proximoIdPedido = 1;
+
+function cadastrarProduto() {
+  rl.question("Qual o Nome do Produto ? ", (nome) => {
+    rl.question("Qual a Categoria ? ", (categoria) => {
+      rl.question("Qual o preço ? ", (preco) => {
+        produto = {
+          id: proximoIdProduto,
+          nome: nome,
+          categoria: categoria,
+          preco: preco,
+          disponivel: true,
+        };
+        produtos.push(produto);
+        proximoIdProduto++;
+        mostrarMenu();
+      });
+    });
+  });
+}
+function listarProdutos() {
+  if (produtos.length === 0) {
+    console.log("Produto não encontrado");
+
+    mostrarMenu();
+
+    return;
+  } else {
+    for (let i = 0; i < produtos.length; i++) {
+      console.log("---------------------");
+      console.log("ID: ", produtos[i].id);
+      console.log("Nome: ", produtos[i].nome);
+      console.log("Categoria: ", produtos[i].categoria);
+      console.log("Resposta: ", produtos[i].preco);
+      console.log("dificuldade: ", produtos[i].disponivel);
+    }
+  }
+  mostrarMenu();
+}
+function buscarPorId() {
+  rl.question("Qual o ID do Produto: ", (id) => {
+    Id = +id;
+    let produtoEncontrado = null;
+    for (let i = 0; i < produtos.length; i++) {
+      if (produtos[i].id === Id) {
+        produtoEncontrado = produtos[i];
+      }
+    }
+    if (produtoEncontrado === null) {
+      console.log("Produto não Encontrado");
+
+      mostrarMenu();
+
+      return;
+    } else {
+      console.log("---------------------");
+      console.log("ID: ", produtoEncontrado.id);
+      console.log("Nome: ", produtoEncontrado.nome);
+      console.log("Categoria: ", produtoEncontrado.categoria);
+      console.log("Preço: ", produtoEncontrado.preco);
+      console.log("disponível: ", produtoEncontrado.disponivel);
+    }
+    mostrarMenu();
+  });
+}
+function atualizarProduto() {
+  rl.question("Qual o Id do Produto ? ", (id) => {
+    Id = +id;
+    let produtoEncontrado = null;
+    for (let i = 0; i < produtos.length; i++) {
+      if (produtos[i].id === Id) {
+        produtoEncontrado = produtos[i];
+      }
+    }
+    if (produtoEncontrado === null) {
+      console.log("Nenhum Produto encontrado");
+
+      mostrarMenu();
+
+      return;
+    } else {
+      rl.question("Novo Nome de produto : ", (nome) => {
+        rl.question("Nova Categoria : ", (categoria) => {
+          rl.question("Novo preço : ", (preco) => {
+            if (nome !== "") {
+              produtoEncontrado.nome = nome;
+            }
+            if (categoria !== "") {
+              produtoEncontrado.categoria = categoria;
+            }
+            if (preco !== "") {
+              produtoEncontrado.preco = preco;
+            }
+            mostrarMenu();
+          });
+        });
+      });
+    }
+  });
+}
+function removerProduto() {
+  rl.question("Digite o ID do Produto que deseja remover: ", (id) => {
+    Id = Number(id);
+
+    if (indice === -1) {
+      console.log("Produto não encontrado.");
+
+      mostrarMenu();
+
+      return;
+    } else {
+      produtos.splice(indice, 1);
+
+      console.log("Produto removido com sucesso!");
+      mostrarMenu();
+
+      return;
+    }
+
+    mostrarMenu();
+  });
+}
+function ativarDesativar() {
+  rl.question("Digite o ID do Produto que deseja remover: ", (id) => {
+    Id = +id;
+    let produtoEncontrado = null;
+    for (let i = 0; i < produtos.length; i++) {
+      if (produtos[i].id === Id) {
+        produtoEncontrado = produtos[i];
+      }
+    }
+    if (produtoEncontrado === null) {
+      console.log("Nenhum Produto encontrado");
+
+      mostrarMenu();
+
+      return;
+    } else {
+      for (let i = 0; i < produtos.length; i++) {
+        if (produtos[i].disponivel === true) {
+          produtos[i].disponivel = false;
+          console.log("Disponibilidade alterada com sucesso");
+        } else if (produtos[i].disponivel === false) {
+          produtos[i].disponivel = true;
+          console.log("Disponibilidade alterada com sucesso");
+        }
+      }
+    }
+    mostrarMenu();
+  });
+}
+
+function criarPedido() {
+  rl.question("Qual seu nome ? ", (cliente) => {
+    pedido = {
+      id: proximoIdPedido,
+      cliente: cliente,
+      item: [],
+      total: 0,
+      statusPedido: "aberto",
+    };
+    pedidos.push(pedido);
+    proximoIdPedido++;
+    mostrarMenu();
+  });
+}
+function adicionarProdutoPedido() {
+  if (pedidos.statusPedido === "finalizado") {
+    console.log("Pedido  já finalizado");
+
+    mostrarMenu();
+
+    return;
+  }
+  rl.question("Qual o Id do seu pedido ? ", (IdPe) => {
+    rl.question("Qual o Id do Produto ? ", (IdPo) => {
+      rl.question("Quantidade : ", (quantidades) => {
+        quantidade = +quantidades;
+        idpo = +IdPo;
+        idpe = +IdPe;
+        let produtoEncontrado = null;
+        let pedidoEncontrado = null;
+        if (pedidos.length === 0) {
+          console.log("Nenhum pedido encontrado");
+
+          mostrarMenu();
+
+          return;
+        }
+        if (produtos.length === 0) {
+          console.log("Nenhum produto encontrado");
+
+          mostrarMenu();
+
+          return;
+        }
+
+        for (let i = 0; i < produtos.length; i++) {
+          if ((produtos[i].disponivel = false)) {
+            console.log("Nenhum produto encontrado");
+
+            mostrarMenu();
+
+            return;
+          }
+          if (produtos[i].id === idpo) {
+            produtoEncontrado = produtos[i];
+          }
+        }
+
+        for (let i = 0; i < pedidos.length; i++) {
+          if (pedidos[i].id === idpe) {
+            pedidoEncontrado = pedidos[i];
+          }
+        }
+        let subtotal = quantidade * produto.preco;
+        item = {
+          id: proximoIdPedido,
+          nomeP: produtoEncontrado.nome,
+          quantidade: quantidades,
+          precoUnitario: produtoEncontrado.preco,
+          Subtotal: subtotal,
+        };
+        pedidoEncontrado.item.push(produtoEncontrado);
+
+        console.log("Item adicionado com sucesso ao seu pedido");
+
+        mostrarMenu();
+      });
+    });
+  });
+}
+
+function visualizarPedido() {
+  rl.question("Qual o Id do seu pedido ? ", (id) => {
+    let Id = +id;
+    let pedidoEncontrado = null;
+    for (let i = 0; i < pedidos.length; i++) {
+      if (pedidos[i].id === Id) {
+        pedidoEncontrado = pedidos[i];
+      }
+    }
+    if (pedidoEncontrado === null) {
+      console.log("Nenhum Pedido encontrado");
+
+      mostrarMenu();
+
+      return;
+    }
+
+    console.log(
+      "===========",
+      "\nPEDIDO : #",
+      pedidoEncontrado.Id,
+      "\nCliente : ",
+      pedidoEncontrado.cliente,
+      "\nStatus : ",
+      pedidoEncontrado.statusPedido,
+      "\n ===========",
+    );
+
+    for (let i = 0; i < pedidoEncontrado.item.length; i++) {
+      console.log(
+        item[i].nomeP,
+        "\nquantidade : ",
+        item[i].quantidade,
+        "\nPreço : R$ ",
+        item[i].precoUnitario,
+        "\nSubtotal : ",
+        item[i].subtotal,
+      );
+    }
+    mostrarMenu();
+  });
+}
+function RemoverItemDoPedido() {
+  if (pedidos.statusPedido === "finalizado") {
+    console.log("Pedido  já finalizado");
+
+    mostrarMenu();
+
+    return;
+  }
+  rl.question("Qual o Id do seu pedido ? ", (IdPe) => {
+    rl.question("Qual o Id do Produto ? ", (IdPo) => {
+      let idpo = +IdPo;
+      let idpe = +IdPe;
+
+      let produtoEncontrado = null;
+      let pedidoEncontrado = null;
+
+      let indice = -1;
+
+      for (let i = 0; i < produtos.length; i++) {
+        if (produtos[i].id === Id) {
+          indice = i;
+        }
+      }
+
+      for (let i = 0; i < produtos.length; i++) {
+        if (produtos[i].id === idpo) {
+          produtoEncontrado = produtos[i];
+        }
+      }
+      for (let i = 0; i < pedidos.length; i++) {
+        if (pedidos[i].id === idpe) {
+          pedidoEncontrado = pedidos[i];
+        }
+      }
+      if (pedidoEncontrado === null || produtoEncontrado === null) {
+        console.log("Pedido/Produto não encontrado");
+
+        mostrarMenu();
+
+        return;
+      } else if (pedido.statusPedido === "aberto") {
+        pedidos.splice(indice, 1);
+
+        console.log("Pedido removido com sucesso!");
+        mostrarMenu();
+
+        return;
+      }
+    });
+  });
+}
+function alterarQuantidade() {
+  if (pedidos.statusPedido === "finalizado") {
+    console.log("Pedido  já finalizado");
+
+    mostrarMenu();
+
+    return;
+  }
+  rl.question("Qual o Id do seu pedido ? ", (IdPe) => {
+    rl.question("Qual o Id do Produto ? ", (IdPo) => {
+      rl.question("Nova quantidade : ", (qtd) => {
+        let idpo = +IdPo;
+        let idpe = +IdPe;
+
+        let produtoEncontrado = null;
+        let pedidoEncontrado = null;
+        for (let i = 0; i < produtos.length; i++) {
+          if (produtos[i].id === idpo) {
+            produtoEncontrado = produtos[i];
+          }
+        }
+        for (let i = 0; i < pedidos.length; i++) {
+          if (pedidos[i].id === idpe) {
+            pedidoEncontrado = pedidos[i];
+          }
+        }
+        if (pedidoEncontrado === null || produtoEncontrado === null) {
+          console.log("Pedido/Produto não encontrado");
+
+          mostrarMenu();
+
+          return;
+        } else {
+          if (qtd !== "") {
+            item.quantidade = Number(qtd);
+          }
+
+          item.Subtotal = item.quantidade * item.precoUnitario;
+
+          console.log("Quantidade Alterada com sucesso");
+        }
+        mostrarMenu();
+      });
+    });
+  });
+}
+function finalizarPedido() {
+  rl.question("Qual o ID do seu pedido : ", (Id) => {
+    let ID = +Id;
+    let pedidoEncontrado = null;
+
+    for (let i = 0; i < pedidos.length; i++) {
+      if (pedidos[i].id === ID) {
+        pedidoEncontrado = pedidos[i];
+      }
+    }
+
+    if (pedidoEncontrado === null) {
+      console.log("Pedido não encontrado");
+
+      mostrarMenu();
+
+      return;
+    } else {
+      let totalFinal = 0;
+      if (
+        pedidoEncontrado.statusPedido === "aberto" &&
+        pedidoEncontrado.item.length > 0
+      ) {
+        pedidoEncontrado.statusPedido === "finalizado";
+
+        for (let i = 0; i < pedidoEncontrado.item.length; i++) {
+          totalFinal = pedidoEncontrado.item.Subtotal + totalFinal;
+        }
+      }
+    }
+  });
+}
+function cancelarPedido() {
+  rl.question("Qual o ID do seu pedido : ", (Id) => {
+    let ID = +Id;
+    let pedidoEncontrado = null;
+
+    for (let i = 0; i < pedidos.length; i++) {
+      if (pedidos[i].id === ID) {
+        pedidoEncontrado = pedidos[i];
+      }
+    }
+
+    if (pedidoEncontrado.statusPedido === "cancelado") {
+      console.log("Pedido já cancelado, tente novamente");
+
+      mostrarMenu();
+
+      return;
+    }
+
+    if (pedidoEncontradoEncontrado === null) {
+      console.log("Pedido não encontrado");
+
+      mostrarMenu();
+
+      return;
+    } else if (pedidoEncontrado.statusPedido === "aberto") {
+      pedidos.statusPedido = "cancelado";
+
+      console.log("Pedido cancelado com sucesso ! ");
+    }
+  });
+}
+function listarPedidos() {
+  for (let i = 0; i < pedidos.length; i++) {
+    console.log(
+      "#" + pedidos[i].id,
+      " - ",
+      pedidos[i].cliente,
+      "\n total : " + pedidos[i].Subtotal,
+      "\nStatus : ",
+      pedidos[i].statusPedido,
+    );
+  }
+  mostrarMenu();
+}
+function listarApenasAbertos() {
+  for (let i = 0; i < pedidos.length; i++) {
+    if (pedidos[i].statusPedido === "aberto") {
+      console.log(
+        "#" + pedidos[i].id,
+        " - ",
+        pedidos[i].cliente,
+        "\n total : " + pedidos[i].Subtotal,
+        "\nStatus : ",
+        pedidos[i].statusPedido,
+      );
+    }
+  }
+  mostrarMenu();
+}
+function FaturamentoHamburgueria() {
+  if (
+    pedidos.statusPedido === "aberto" ||
+    pedidos.statusPedido === "cancelado"
+  ) {
+    console.log("Pedidos em aberto ou cancelados");
+
+    mostrarMenu();
+
+    return;
+  }
+  for (let i = 0; i < pedidos.length; i++) {
+    if (pedidos[i].statusPedido === "Finalizado") {
+      console.log(
+        "Pedido #",
+        +pedidos[i].id,
+        "=",
+        "\n total : " + pedidos[i].Subtotal,
+        "Faturamento total : R$ ",
+        totalFinal,
+      );
+    }
+  }
+  mostrarMenu();
+}
+function produtoMaisVendido() {
+  console.log("===== PRODUTO MAIS VENDIDO =====");
+  let idsProdutos = [];
+  let quantidadesVendidas = [];
+
+  for (let i = 1; i <= produtos.length; i++) {
+    if (pedidos[i].status === "finalizado") {
+      for (let j = 0; j < pedidos.length; j++) {
+        let idProduto = pedidos[i].item[j].idProduto;
+        let quantidade = pedidos[i].item[j].quantidade;
+
+        let encontrou = false;
+
+        for (let l = 0; l < pedidos.item.length; l++) {
+          if (idsProdutos[l] === idProdutoIdProduto) {
+            quantidadesVendidas[k] = quantidadesVendidas[k] + quantidade;
+            encontrou = true
+          }
+        }
+        if(encontrou === false) {
+          idsProduto.push(idProduto)
+          quantidadesVendidas.push(quantidade)
+        }
+      }
+    }
+  }
+  if(idsProdutos.length === 0 ) {
+    console.log("Nenhum produto vendido ainda.")
+
+    mostrarMenu()
+
+    return
+
+  }
+
+  let maiorQuantidade = quantidadesVendidas[0]
+  let idMaisVendido = idsProdutos[0]
+
+  for(let i = 1;i < quantidadesVendidas.length; i++) {
+    if(quantidadesVendidas[i] > quantidadesVendidas[i]) {
+
+      maiorQuantidade = quantidadesVendidas[i]
+      idMaisVendido = idsProdutos[i]
+
+    }
+  }
+  let nomeProduto = ""
+
+  for(let i = 0; i < produtos.length; i++) {
+    if(produtos[i].id === idMaisVendido) {
+
+      nomeProduto = produtos[i].nome
+
+    }
+
+  }
+
+  console.log("Produto: "),nomeProduto
+  console.log("Quantidade vendida: ",maiorQuantidade)
+
+  mostrarMenu()
+  
+}
+function mostrarMenu() {
+  console.log("===============", "\n   BYTE BURGER ", "\n===============");
+
+  console.log("   CARDÁPIO");
+  console.log("1 - Cadastrar Produto ");
+  console.log("2 - Listar Produto ");
+  console.log("3 - Buscar Por Id ");
+  console.log("4 - Atualizar Produto");
+  console.log("5 - Remover Produto");
+  console.log("6 - Alterar disponibilidade");
+
+  console.log("\n Pedidos");
+  console.log("7 - Criar Pedido");
+  console.log("8 - Adicionar Produto ao pedido");
+  console.log("9 - Visualizar pedido ");
+  console.log("10 - Remover item do pedido");
+  console.log("11 - Alterar quantidade de um item");
+
+  console.log("\n finalização");
+  console.log("12 - Finalizar pedido");
+  console.log("13 - Cancelar pedido");
+  console.log("14 - Listar pedidos");
+  console.log("15 - Listar pedidos abertos");
+
+  console.log("\n Relatórios");
+  console.log("16 - Mostrar faturamento");
+  console.log("17 - Produto mais vendido");
+
+  console.log("o - Sair");
+
+  console.log("\n0 - Sair");
+  rl.question("\nEscolha uma opção: ", (opcao) => {
+    if (opcao === "1") {
+      cadastrarProduto();
+    } else if (opcao === "2") {
+      listarProdutos();
+    } else if (opcao === "3") {
+      buscarPorId();
+    } else if (opcao === "4") {
+      atualizarProduto();
+    } else if (opcao === "5") {
+      removerProduto();
+    } else if (opcao === "6") {
+      ativarDesativar();
+    } else if (opcao === "7") {
+      criarPedido();
+    } else if (opcao === "8") {
+      adicionarProdutoPedido();
+    } else if (opcao === "9") {
+      visualizarPedido();
+    } else if (opcao === "10") {
+      RemoverItemDoPedido();
+    } else if (opcao === "11") {
+      alterarQuantidade();
+    } else if (opcao === "12") {
+      finalizarPedido();
+    } else if (opcao === "13") {
+      cancelarPedido();
+    } else if (opcao === "14") {
+      listarPedidos();
+    } else if (opcao === "15") {
+      listarApenasAbertos();
+    } else if (opcao === "16") {
+      FaturamentoHamburgueria();
+    } else if (opcao === "17") {
+      produtoMaisVendido();
+    } else if (opcao === "0") {
+      console.log("Sistema encerrado.");
+
+      rl.close();
+    } else {
+      console.log("Opção inválida.");
+
+      mostrarMenu();
+    }
+  });
+}
+mostrarMenu();
